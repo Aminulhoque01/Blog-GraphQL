@@ -11,6 +11,7 @@ interface userInfo {
     email: string,
     password: string
     bio?:string
+    userId:number
 }
 
 
@@ -48,7 +49,7 @@ export const  Mutation= {
             })
         }
 
-        const token = await jwtHelper({ userId: newUser.id }, config.jwt.secret as string)
+        const token = await jwtHelper.generateToken({ userId: newUser.id }, config.jwt.secret as string)
         return {
             userError: null,
             token: token
@@ -78,7 +79,7 @@ export const  Mutation= {
                 token: null
             }
         }
-        const token = await jwtHelper({ userId: user.id }, config.jwt.secret as string)
+        const token = await jwtHelper.generateToken({ userId: user.id }, config.jwt.secret as string)
 
         console.log(token)
 
@@ -86,7 +87,56 @@ export const  Mutation= {
             token: token
         }
 
+    },
+
+
+    
+
+    addPost: async (parent: any, agrs: any, { prisma, userInfo }: any) => {
+        if (!userInfo) {
+            return {
+                userError: "Unauthorized",
+                post: null
+            };
+        }
+    
+        if (!agrs.title || !agrs.content) {
+            return {
+                userError: "Title and content are required",
+                post: null
+            };
+        }
+    
+        try {
+            const newPost = await prisma.post.create({
+                data: {
+                    title: agrs.title,
+                    content: agrs.content,
+                    author: {
+                        connect: {
+                            id: userInfo.userId  // Connect the post with an existing User by ID
+                        }
+                    }
+                }
+            });
+    
+            
+            return {
+                userError: null,
+                post: newPost
+            };
+        } catch (error) {
+            console.error("Error creating post:", error);
+            return {
+                userError: "Failed to create post",
+                post: null
+            };
+        }
     }
+    
+    
+
+
 
 
 }

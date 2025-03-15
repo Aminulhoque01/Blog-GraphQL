@@ -18,7 +18,39 @@ export const typeDefs = `#graphql
             password:String!
 
         ):AuthPayload
+
+
+        addPost(title:String!, content:String!):PostPayload
     } 
+
+    type Post {
+        id:ID !
+        title:String!
+        content:String!
+        author:User
+        createdAt:String!
+        published: Boolean!
+    }
+
+    type User {
+        id:ID!
+        name:String!
+        email:String!
+        posts:[Post]
+    }
+
+    type Profile{
+        id:ID!
+        bio:String!
+        createdAt:String!
+        user:User!
+
+    }
+
+    type PostPayload{
+      userError:String
+      post:Post
+    }
 
     type UserArgs {
         userError:String
@@ -28,29 +60,5 @@ export const typeDefs = `#graphql
     type AuthPayload{
         userError:String
         token:String
-    }
-
- type Post {
-    id:ID !
-    title:String!
-    content:String!
-    author:User
-    createdAt:String!
-    published: Boolean!
- }
-
- type User {
-    id:ID!
-    name:String!
-    email:String!
-    posts:[Post]
- }
-
- type Profile{
-    id:ID!
-    bio:String!
-    createdAt:String!
-    user:User!
-
     }
 `;
