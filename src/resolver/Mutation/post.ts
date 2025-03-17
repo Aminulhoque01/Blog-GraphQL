@@ -231,13 +231,7 @@ export const postResolver = {
                 };
             }
 
-            // utils import part
-            // const error= await checkUser(prisma,userInfo.userId, agrs.postId)
-            // if(error){
-            //     return{
-            //         error
-            //     }
-            // }
+           
 
             const updatePost = await prisma.post.update({
                 where: {
